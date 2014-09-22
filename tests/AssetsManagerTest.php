@@ -169,6 +169,27 @@ class AssetsManagerTest extends PHPUnit_Framework_TestCase
 		$this->assertStringEndsWith($asset2, array_pop($assets2));
 	}
 
+	public function testUrlCommandCallback()
+	{
+		$asset1 = 'foo.js';
+		$asset2 = 'foo.css';
+		$collection = array($asset1, $asset2);
+		$config = array('collections' => array('collection' => $collection));
+		$this->manager->config($config);
+		$this->manager->add('collection');
+
+		$this->assertContains('src="js/foo.js"', $this->manager->js());
+		$this->assertContains('href="css/foo.css"', $this->manager->css());
+
+		$config['url_command'] = function($file) {
+			return 'somedir/' . $file;
+		};
+		$this->manager->config($config);
+
+		$this->assertContains('src="somedir/js/foo.js"', $this->manager->js());
+		$this->assertContains('href="somedir/css/foo.css"', $this->manager->css());
+	}
+
 	protected static function getMethod($name) {
 		$class = new ReflectionClass('Stolz\Assets\Manager');
 		$method = $class->getMethod($name);
