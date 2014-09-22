@@ -300,7 +300,7 @@ class Manager
 		// Build tags
 		$output = '';
 		foreach($assets as $asset)
-			$output .= '<link href="' . $asset . '"' . $attributes . " />\n";
+			$output .= '<link href="' . $this->getUrl($asset) . '"' . $attributes . " />\n";
 
 		return $output;
 	}
@@ -337,7 +337,7 @@ class Manager
 		// Build tags
 		$output = '';
 		foreach($assets as $asset)
-			$output .= '<script src="' . $asset . '"' . $attributes . "></script>\n";
+			$output .= '<script src="' . $this->getUrl($asset) . '"' . $attributes . "></script>\n";
 
 		return $output;
 	}
