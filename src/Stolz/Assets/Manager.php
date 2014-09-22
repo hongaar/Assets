@@ -69,6 +69,12 @@ class Manager
 	protected $fetch_command;
 
 	/**
+	 * Closure used to retrieve URL from filename
+	 * @var Closure
+	 */
+	protected $url_command;
+
+	/**
 	 * Available collections.
 	 * Each collection is an array of assets.
 	 * Collections may also contain other collections.
@@ -135,6 +141,10 @@ class Manager
 		// Set custom pipeline fetch command
 		if(isset($config['fetch_command']) and ($config['fetch_command'] instanceof Closure))
 			$this->fetch_command = $config['fetch_command'];
+
+		// Set custom URL command
+		if(isset($config['url_command']) and ($config['url_command'] instanceof Closure))
+			$this->url_command = $config['url_command'];
 
 		// Set custom CSS directory
 		if(isset($config['css_dir']))
@@ -266,11 +276,11 @@ class Manager
 			return null;
 
 		if($this->pipeline)
-			return '<link type="text/css" rel="stylesheet" href="'.$this->cssPipeline().'" />'."\n";
+			return '<link type="text/css" rel="stylesheet" href="'.$this->getUrl($this->cssPipeline()).'" />'."\n";
 
 		$output = '';
 		foreach($this->css as $file)
-			$output .= '<link type="text/css" rel="stylesheet" href="'.$file.'" />'."\n";
+			$output .= '<link type="text/css" rel="stylesheet" href="'.$this->getUrl($file).'" />'."\n";
 
 		return $output;
 	}
@@ -286,11 +296,11 @@ class Manager
 			return null;
 
 		if($this->pipeline)
-			return '<script type="text/javascript" src="'.$this->jsPipeline().'"></script>'."\n";
+			return '<script type="text/javascript" src="'.$this->getUrl($this->jsPipeline()).'"></script>'."\n";
 
 		$output = '';
 		foreach($this->js as $file)
-			$output .= '<script type="text/javascript" src="'.$file.'"></script>'."\n";
+			$output .= '<script type="text/javascript" src="'.$this->getUrl($file).'"></script>'."\n";
 
 		return $output;
 	}
@@ -595,5 +605,16 @@ class Manager
 			$files[] = substr($file->getPathname(), $offset);
 
 		return $files;
+	}
+
+	/**
+	 * Processes the filename through the url_command closure, if set
+	 *
+	 * @param 	string $file
+	 * @return 	string
+	 */
+	protected function getUrl($file)
+	{
+		return ($this->url_command instanceof Closure) ? $this->url_command->__invoke($file) : $file;
 	}
 }

@@ -19,6 +19,20 @@ return array(
 
 	/*
 	|--------------------------------------------------------------------------
+	| Use absolute URLs when writing html tags
+	|--------------------------------------------------------------------------
+	|
+	| When writing <script> and <link> tags, use absolute URL's instead of
+	| relative ones. This uses Laravel's buildin `asset()` helper function.
+	| This is useful if you don't want to rely on the <base> in your layout.
+	|
+	| Default: 'false'
+	*/
+
+	'use_absolute_url' => false,
+
+	/*
+	|--------------------------------------------------------------------------
 	| Assets collections
 	|--------------------------------------------------------------------------
 	|

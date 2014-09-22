@@ -26,6 +26,14 @@ class ManagerServiceProvider extends ServiceProvider
 		$config = $this->app->config->get('assets::config', array());
 		$config['public_dir'] = public_path();
 
+		// Set callback when using absolute paths
+		if ($config['use_absolute_url']) {
+			$config['url_command'] = function($file) {
+				return asset($file);
+			};
+		}
+		unset($config['use_absolute_url']);
+
 		// Apply config settings
 		$this->app['stolz.assets']->config($config);
 
